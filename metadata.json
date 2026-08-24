@@ -1,0 +1,6 @@
+{
+  "name": "Artscent",
+  "description": "Fine Perfumes Nairobi e-commerce store and catalog for luxury fragrances, featuring scent discovery, shopping cart, checkout, and admin management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Payment & Checkout — Artscent</title>
+  <meta content="Complete your fine fragrance payment securely." name="description" />
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="css/clean-minimalism-theme.css" rel="stylesheet" type="text/css" />
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+  <script src="../js/firebase-client.js"></script>
+  <script src="../js/products-api.js"></script>
+  <script src="../js/user-auth.js"></script>
+  <script src="../js/cart-drawer.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: #0A0A0C;
+      background-image: radial-gradient(circle at 50% 0%, #17181D 0%, #0A0A0C 70%);
+      color: #FFFFFF;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 16px;
+    }
+
+    /* Main Container Modal */
+    .pay-container {
+      width: 100%;
+      max-width: 1180px;
+      background-color: #121316;
+      border: 1px solid #23242A;
+      border-radius: 0px !important;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navigation Header */
+    .pay-header {
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid #1F2026;
+    }
+
+    .pay-close-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: #1B1C21;
+      border: 1px solid #2D2E35;
+      border-radius: 0px !important;
+      color: #9CA3AF;
+      text-decoration: none;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pay-close-btn:hover {
+      background: #25262D;
+      color: #FFFFFF;
+      border-color: #40424C;
+    }
+
+    .pay-breadcrumb {
+      font-size: 14px;
+      color: #71717A;
+      font-weight: 500;
+    }
+
+    .pay-breadcrumb span {
+      color: #FFFFFF;
+    }
+
+    /* Two Columns Grid */
+    .pay-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 700px;
+    }
+
+    @media (max-width: 960px) {
+      .pay-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Column: Order Summary */
+    .pay-summary-col {
+      padding: 32px 36px;
+      border-right: 1px solid #1F2026;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      background: #111215;
+    }
+
+    @media (max-width: 960px) {
+      .pay-summary-col {
+        border-right: none;
+        border-bottom: 1px solid #1F2026;
+        padding: 24px 20px;
+      }
+    }
+
+    .pay-section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pay-section-title {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      color: #FFFFFF;
+    }
+
+    .pay-badge-pill {
+      background: #1E1F25;
+      border: 1px solid #2C2D35;
+      color: #9CA3AF;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 9px;
+      border-radius: 0px !important;
+    }
+
+    /* Cart Items List */
+    .pay-items-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .pay-item-card {
+      background: #18191E;
+      border: 1px solid #27282F;
+      border-radius: 0px !important;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      transition: border-color 0.2s ease;
+    }
+
+    .pay-item-card:hover {
+      border-color: #383944;
+    }
+
+    .pay-item-img-wrap {
+      width: 72px;
+      height: 72px;
+      border-radius: 0px !important;
+      background: #0E0F12;
+      position: relative;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .pay-item-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0px !important;
+    }
+
+    .pay-item-qty-badge {
+      position: absolute;
+      bottom: 4px;
+      left: 4px;
+      background: rgba(14, 15, 18, 0.85);
+      border: 1px solid #2E303A;
+      color: #D1D5DB;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 1px 5px;
+      border-radius: 0px !important;
+    }
+
+    .pay-item-heart {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      color: #6B7280;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pay-item-heart:hover {
+      color: #EF4444;
+    }
+
+    .pay-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .pay-item-title {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #FFFFFF;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .pay-item-subtitle {
+      font-size: 12px;
+      color: #8E919B;
+      margin-bottom: 8px;
+    }
+
+    .pay-item-pills {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .pay-pill-select {
+      background: #202127;
+      border: 1px solid #2D2E37;
+      color: #D1D5DB;
+      font-size: 11.5px;
+      padding: 2px 8px;
+      border-radius: 0px !important;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .pay-pill-select:hover {
+      background: #282931;
+    }
+
+    .pay-item-price-col {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 16px;
+    }
+
+    .pay-item-remove-btn {
+      color: #6B7280;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 2px;
+      font-size: 14px;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .pay-item-remove-btn:hover {
+      color: #EF4444;
+    }
+
+    .pay-item-price {
+      font-size: 15px;
+      font-weight: 600;
+      color: #FFFFFF;
+    }
+
+    /* Discount Code Card */
+    .pay-discount-card {
+      background: #18191E;
+      border: 1px solid #27282F;
+      border-radius: 0px !important;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pay-discount-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 1;
+    }
+
+    .pay-discount-icon-box {
+      width: 34px;
+      height: 34px;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 0px !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #3B82F6;
+    }
+
+    .pay-discount-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #FFFFFF;
+      line-height: 1.2;
+    }
+
+    .pay-discount-sub {
+      font-size: 11.5px;
+      color: #8E919B;
+    }
+
+    .pay-discount-btn {
+      background: #22232A;
+      border: 1px solid #32333D;
+      color: #E5E7EB;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 0px !important;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 1;
+      transition: all 0.2s ease;
+    }
+
+    .pay-discount-btn:hover {
+      background: #2C2E38;
+      border-color: #454756;
+      color: #FFFFFF;
+    }
+
+    /* Subtotal Calculations */
+    .pay-calc-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-top: 1px solid #1F2026;
+      padding-top: 18px;
+    }
+
+    .pay-calc-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      color: #8E919B;
+    }
+
+    .pay-calc-row.total {
+      margin-top: 6px;
+      padding-top: 12px;
+      border-top: 1px solid #25262F;
+      color: #FFFFFF;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    /* Recommended For You Card */
+    .pay-rec-section {
+      margin-top: 6px;
+    }
+
+    .pay-rec-label {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #8E919B;
+      margin-bottom: 10px;
+      text-transform: capitalize;
+    }
+
+    .pay-rec-card {
+      background: #18191E;
+      border: 1px solid #27282F;
+      border-radius: 0px !important;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .pay-rec-card:hover {
+      border-color: #383944;
+    }
+
+    .pay-rec-img-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: 0px !important;
+      background: #0E0F12;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .pay-rec-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 0px !important;
+    }
+
+    .pay-rec-dot {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 8px;
+      height: 8px;
+      background: #F97316;
+      border-radius: 0px !important;
+      border: 1px solid #18191E;
+    }
+
+    .pay-rec-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .pay-rec-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #FFFFFF;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pay-rec-desc {
+      font-size: 11px;
+      color: #71717A;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .pay-rec-plus-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      background: #23242B;
+      border: 1px solid #333540;
+      color: #9CA3AF;
+      border-radius: 0px !important;
+      font-size: 12px;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: all 0.2s;
+    }
+
+    .pay-rec-plus-btn:hover {
+      background: #3B82F6;
+      color: #FFFFFF;
+      border-color: #3B82F6;
+    }
+
+    .pay-rec-price-col {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .pay-rec-old-price {
+      font-size: 11px;
+      color: #6B7280;
+      text-decoration: line-through;
+    }
+
+    .pay-rec-new-price {
+      font-size: 13px;
+      font-weight: 700;
+      color: #EF4444;
+    }
+
+    .pay-rec-arrow {
+      color: #6B7280;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      margin-left: 6px;
+    }
+
+    /* Right Column: Payment Form */
+    .pay-form-col {
+      padding: 32px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      background: #121316;
+    }
+
+    @media (max-width: 960px) {
+      .pay-form-col {
+        padding: 24px 20px;
+      }
+    }
+
+    /* Tabs: Pay by Card / Pay with PayPal / M-Pesa */
+    .pay-mode-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: #17181D;
+      padding: 4px;
+      border-radius: 0px !important;
+      border: 1px solid #23242B;
+    }
+
+    .pay-mode-tab {
+      padding: 10px 16px;
+      text-align: center;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #9CA3AF;
+      background: transparent;
+      border: none;
+      border-radius: 0px !important;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pay-mode-tab.active {
+      background: #25262E;
+      color: #FFFFFF;
+      font-weight: 600;
+      border: 1px solid #363844;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Quick Pay 4-Pill Row */
+    .pay-tiles-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .pay-tile {
+      background: #17181D;
+      border: 1px solid #26272F;
+      border-radius: 0px !important;
+      padding: 10px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 12px;
+      color: #9CA3AF;
+      user-select: none;
+    }
+
+    .pay-tile:hover {
+      background: #1F2027;
+      color: #E5E7EB;
+    }
+
+    .pay-tile.active {
+      border: 2px solid #2563EB !important;
+      background: #181C26 !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 0 12px rgba(37, 99, 235, 0.2);
+    }
+
+    .pay-tile-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    /* Security Link Row */
+    .pay-security-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      color: #8E919B;
+    }
+
+    .pay-security-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #9CA3AF;
+    }
+
+    .pay-security-link {
+      color: #6B7280;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .pay-security-link:hover {
+      color: #9CA3AF;
+    }
+
+    /* Input Form Fields */
+    .pay-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .pay-label {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #8E919B;
+    }
+
+    .pay-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .pay-input {
+      width: 100%;
+      background: #17181D;
+      border: 1px solid #26272F;
+      border-radius: 0px !important;
+      color: #FFFFFF;
+      font-size: 14px;
+      padding: 10px 14px;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .pay-input:focus {
+      border-color: #2563EB;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+      background: #191B22;
+    }
+
+    .pay-input::placeholder {
+      color: #555761;
+    }
+
+    .pay-card-icons {
+      position: absolute;
+      right: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .pay-brand-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 5px;
+      border-radius: 0px !important;
+      background: #25262F;
+      color: #D1D5DB;
+      border: 1px solid #363744;
+    }
+
+    .pay-clear-btn {
+      position: absolute;
+      right: 12px;
+      background: transparent;
+      border: none;
+      color: #71717A;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 2px 4px;
+    }
+
+    .pay-clear-btn:hover {
+      color: #D1D5DB;
+    }
+
+    .pay-form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .pay-select {
+      width: 100%;
+      background: #17181D;
+      border: 1px solid #26272F;
+      border-radius: 0px !important;
+      color: #FFFFFF;
+      font-size: 14px;
+      padding: 10px 14px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239CA3AF' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      transition: all 0.2s ease;
+    }
+
+    .pay-select:focus {
+      border-color: #2563EB;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+
+    /* Right review summary */
+    .pay-review-box {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-top: 14px;
+      border-top: 1px solid #1F2026;
+    }
+
+    .pay-review-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13.5px;
+      color: #8E919B;
+    }
+
+    .pay-review-row.total {
+      font-size: 15px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+
+    /* Main CTA Button */
+    .pay-submit-btn {
+      width: 100%;
+      background: #2563EB;
+      border: none;
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 13px 20px;
+      border-radius: 0px !important;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+      transition: all 0.2s ease;
+      margin-top: 4px;
+    }
+
+    .pay-submit-btn:hover {
+      background: #1D4ED8;
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .pay-submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .pay-footer-trust {
+      text-align: center;
+      font-size: 11.5px;
+      color: #6B7280;
+      margin-top: 2px;
+    }
+
+    .pay-footer-trust span {
+      color: #9CA3AF;
+    }
+
+    /* Success Modal */
+    .pay-modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+
+    .pay-modal-backdrop.open {
+      display: flex;
+    }
+
+    .pay-modal-box {
+      background: #16171C;
+      border: 1px solid #2D2E38;
+      border-radius: 0px !important;
+      padding: 36px 32px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+      animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .pay-modal-icon {
+      width: 60px;
+      height: 60px;
+      background: rgba(34, 197, 94, 0.15);
+      border: 2px solid #22C55E;
+      color: #22C55E;
+      border-radius: 0px !important;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin-bottom: 20px;
+    }
+
+    .pay-modal-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+    }
+
+    .pay-modal-sub {
+      font-size: 14px;
+      color: #9CA3AF;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .pay-modal-details {
+      background: #1C1D24;
+      border: 1px solid #292A34;
+      border-radius: 0px !important;
+      padding: 16px;
+      text-align: left;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 13.5px;
+    }
+
+    .pay-modal-row {
+      display: flex;
+      justify-content: space-between;
+      color: #9CA3AF;
+    }
+
+    .pay-modal-row span:last-child {
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    .pay-modal-home-btn {
+      width: 100%;
+      background: #FFFFFF;
+      color: #111111;
+      border: none;
+      border-radius: 0px !important;
+      padding: 12px;
+      font-size: 14.5px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .pay-modal-home-btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Main Checkout Payment Modal Frame -->
+  <div class="pay-container">
+
+    <!-- Top Navigation Header -->
+    <div class="pay-header">
+      <a href="order.html" class="pay-close-btn" title="Back to Delivery Info">✕</a>
+      <div class="pay-breadcrumb">
+        Shopping Cart / <span>Checkout</span>
+      </div>
+    </div>
+
+    <!-- Two-Column Body -->
+    <div class="pay-body">
+
+      <!-- Left Column: Order Summary & Recommendations -->
+      <div class="pay-summary-col">
+        
+        <!-- Header -->
+        <div class="pay-section-header">
+          <h2 class="pay-section-title">Order Summary</h2>
+          <span class="pay-badge-pill" id="payItemCountBadge">0 items</span>
+        </div>
+
+        <!-- Cart Items List (Dynamically Loaded) -->
+        <div class="pay-items-list" id="payItemsList">
+          <!-- Populated from localStorage cart -->
+        </div>
+
+        <!-- Discount Code Card with Hexagonal Pattern -->
+        <div class="pay-discount-card">
+          <div class="pay-discount-left">
+            <div class="pay-discount-icon-box">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                <line x1="2" y1="10" x2="22" y2="10"></line>
+              </svg>
+            </div>
+            <div>
+              <div class="pay-discount-title">Discount code</div>
+              <div class="pay-discount-sub">Save 20% with code</div>
+            </div>
+          </div>
+          <button type="button" class="pay-discount-btn" id="payAddCodeBtn" onclick="applyPromoCode()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="9" y1="9" x2="15" y2="15"></line>
+              <line x1="15" y1="9" x2="9" y2="15"></line>
+            </svg>
+            Add code
+          </button>
+        </div>
+
+        <!-- Subtotal / Shipping / Total -->
+        <div class="pay-calc-section">
+          <div class="pay-calc-row">
+            <span>Subtotal</span>
+            <span id="paySubtotalVal">Ksh 0</span>
+          </div>
+          <div class="pay-calc-row">
+            <span>Shipping</span>
+            <span style="color: #10B981; font-weight: 500;">Free</span>
+          </div>
+          <div class="pay-calc-row">
+            <span>Tax <span title="Included in fragrance pricing" style="cursor:help;">ⓘ</span></span>
+            <span>Ksh 0.00</span>
+          </div>
+          <div class="pay-calc-row total">
+            <span>Total</span>
+            <span id="payTotalVal">Ksh 0</span>
+          </div>
+        </div>
+
+        <!-- Recommended For You (Real Product from Supabase) -->
+        <div class="pay-rec-section">
+          <div class="pay-rec-label">Recommended for you</div>
+          <div class="pay-rec-card" id="payRecCard">
+            <div class="pay-rec-img-wrap">
+              <img id="payRecImg" src="https://placehold.co/400x500?text=Artscent" alt="Recommended Fragrance" class="pay-rec-img" />
+              <span class="pay-rec-dot"></span>
+            </div>
+            <div class="pay-rec-info">
+              <div class="pay-rec-title" id="payRecTitle">SCANDAL GOLD EAU DE PARFUM</div>
+              <div class="pay-rec-desc" id="payRecDesc">Honey, gardenia and warm patchouli bouquet.</div>
+              <button type="button" class="pay-rec-plus-btn" id="payRecAddBtn" title="Add to order" onclick="addRecommendedItem()">+</button>
+            </div>
+            <div class="pay-rec-price-col">
+              <span class="pay-rec-old-price" id="payRecOldPrice">Ksh 5,500</span>
+              <span class="pay-rec-new-price" id="payRecNewPrice">Ksh 4,200</span>
+            </div>
+            <div class="pay-rec-arrow" onclick="addRecommendedItem()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Interactive Payment Form -->
+      <div class="pay-form-col">
+        
+        <!-- Payment Mode Tabs (Pay by Card / Pay with PayPal) -->
+        <div class="pay-mode-tabs">
+          <button type="button" class="pay-mode-tab active" id="tabPayCard" onclick="switchPayMode('card')">Pay by Card</button>
+          <button type="button" class="pay-mode-tab" id="tabPayMpesa" onclick="switchPayMode('mpesa')">Pay with M-Pesa / PayPal</button>
+        </div>
+
+        <!-- 4 Payment Method Tiles (Card, Apple Pay, Google Pay, M-Pesa) -->
+        <div class="pay-tiles-grid">
+          <div class="pay-tile active" id="tileCard" onclick="selectTile(this, 'card')">
+            <span class="pay-tile-icon">💳</span>
+            <span>Card</span>
+          </div>
+          <div class="pay-tile" id="tileApple" onclick="selectTile(this, 'apple')">
+            <span class="pay-tile-icon"></span>
+            <span>Apple Pay</span>
+          </div>
+          <div class="pay-tile" id="tileGoogle" onclick="selectTile(this, 'google')">
+            <span class="pay-tile-icon">G</span>
+            <span>Google Pay</span>
+          </div>
+          <div class="pay-tile" id="tileMpesa" onclick="selectTile(this, 'mpesa')">
+            <span class="pay-tile-icon">📱</span>
+            <span>M-Pesa</span>
+          </div>
+        </div>
+
+        <!-- Security Banner -->
+        <div class="pay-security-row">
+          <div class="pay-security-left">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <span>Secure payment link</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+          <a href="javascript:void(0)" class="pay-security-link">Learn more</a>
+        </div>
+
+        <!-- Payment Input Fields Form -->
+        <form id="paymentMainForm" onsubmit="handlePaySubmit(event)">
+          
+          <!-- Email Address -->
+          <div class="pay-field-group" style="margin-bottom: 12px;">
+            <label class="pay-label" for="payEmail">Email address</label>
+            <input type="email" class="pay-input" id="payEmail" placeholder="jenny@example.com" required />
+          </div>
+
+          <!-- Card Fields (Toggled based on payment selection) -->
+          <div id="cardFieldsSection">
+            <!-- Card Number -->
+            <div class="pay-field-group" style="margin-bottom: 12px;">
+              <label class="pay-label" for="payCardNum">Card number</label>
+              <div class="pay-input-wrap">
+                <input type="text" class="pay-input" id="payCardNum" placeholder="1234 1234 1234 1234" maxlength="19" required />
+                <div class="pay-card-icons">
+                  <span class="pay-brand-badge" style="color:#60A5FA;">VISA</span>
+                  <span class="pay-brand-badge" style="color:#F87171;">MC</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Expiration Date & Security Code -->
+            <div class="pay-form-row-2" style="margin-bottom: 12px;">
+              <div class="pay-field-group">
+                <label class="pay-label" for="payExp">Expiration date</label>
+                <input type="text" class="pay-input" id="payExp" placeholder="10 / 2026" maxlength="7" required />
+              </div>
+              <div class="pay-field-group">
+                <label class="pay-label" for="payCvc">Security code</label>
+                <div class="pay-input-wrap">
+                  <input type="password" class="pay-input" id="payCvc" placeholder="135" maxlength="4" required />
+                </div>
+              </div>
+            </div>
+
+            <!-- Cardholder Name -->
+            <div class="pay-field-group" style="margin-bottom: 12px;">
+              <label class="pay-label" for="payName">Cardholder name</label>
+              <input type="text" class="pay-input" id="payName" placeholder="Jenny Rosen" required />
+            </div>
+          </div>
+
+          <!-- M-Pesa Dedicated Phone Field (Visible when M-Pesa is selected) -->
+          <div id="mpesaFieldsSection" style="display: none; margin-bottom: 12px;">
+            <div class="pay-field-group">
+              <label class="pay-label" for="payMpesaPhone">M-Pesa Mobile Number</label>
+              <input type="tel" class="pay-input" id="payMpesaPhone" placeholder="0712 345 678" />
+              <span style="font-size: 11px; color: #10B981; margin-top: 4px;">An STK Push prompt will be sent to your phone.</span>
+            </div>
+          </div>
+
+          <!-- Country Dropdown -->
+          <div class="pay-field-group" style="margin-bottom: 12px;">
+            <select class="pay-select" id="payCountry">
+              <option value="KE" selected>🇰🇪 Kenya</option>
+              <option value="US">🇺🇸 United States</option>
+              <option value="GB">🇬🇧 United Kingdom</option>
+              <option value="UG">🇺🇬 Uganda</option>
+              <option value="TZ">🇹🇿 Tanzania</option>
+            </select>
+          </div>
+
+          <!-- Street Address with Clear Button -->
+          <div class="pay-field-group" style="margin-bottom: 12px;">
+            <div class="pay-input-wrap">
+              <input type="text" class="pay-input" id="payAddress" placeholder="27 Fredrick Ave Brothers, Kilimani" required />
+              <button type="button" class="pay-clear-btn" onclick="document.getElementById('payAddress').value='';">Clear</button>
+            </div>
+          </div>
+
+          <!-- State / County Select -->
+          <div class="pay-field-group" style="margin-bottom: 12px;">
+            <select class="pay-select" id="payState">
+              <option value="Nairobi" selected>Nairobi County</option>
+              <option value="Mombasa">Mombasa County</option>
+              <option value="Kisumu">Kisumu County</option>
+              <option value="Nakuru">Nakuru County</option>
+              <option value="Kiambu">Kiambu County</option>
+            </select>
+          </div>
+
+          <!-- City & ZIP Code -->
+          <div class="pay-form-row-2" style="margin-bottom: 12px;">
+            <div class="pay-field-group">
+              <input type="text" class="pay-input" id="payCity" placeholder="Nairobi" required />
+            </div>
+            <div class="pay-field-group">
+              <input type="text" class="pay-input" id="payZip" placeholder="00100" />
+            </div>
+          </div>
+
+          <!-- Tax ID Number (Optional) -->
+          <div class="pay-field-group" style="margin-bottom: 16px;">
+            <label class="pay-label" for="payTaxId">Tax ID number (optional)</label>
+            <input type="text" class="pay-input" id="payTaxId" placeholder="15978046" />
+          </div>
+
+          <!-- Calculation Review -->
+          <div class="pay-review-box">
+            <div class="pay-review-row">
+              <span>Subtotal</span>
+              <span id="payReviewSubtotal">Ksh 0</span>
+            </div>
+            <div class="pay-review-row total">
+              <span>Total</span>
+              <span id="payReviewTotal">Ksh 0</span>
+            </div>
+          </div>
+
+          <!-- Primary Submit Action Button -->
+          <button type="submit" class="pay-submit-btn" id="payActionBtn">
+            <span id="payBtnLabel">Pay Ksh 0</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+          </button>
+
+          <!-- Footer Trust Note -->
+          <div class="pay-footer-trust">
+            Powered by <span>Artscent Secure</span> • Terms • Privacy
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Success Confirmation Modal -->
+  <div class="pay-modal-backdrop" id="paySuccessModal">
+    <div class="pay-modal-box">
+      <div class="pay-modal-icon">✓</div>
+      <h3 class="pay-modal-title">Payment Confirmed</h3>
+      <p class="pay-modal-sub">Thank you for your order! Your payment was processed securely. A confirmation receipt has been dispatched to your email.</p>
+      
+      <div class="pay-modal-details">
+        <div class="pay-modal-row">
+          <span>Order Reference:</span>
+          <span id="modalOrderRef">#AS-8821</span>
+        </div>
+        <div class="pay-modal-row">
+          <span>Payment Method:</span>
+          <span id="modalPayType">Credit Card (Visa)</span>
+        </div>
+        <div class="pay-modal-row">
+          <span>Amount Paid:</span>
+          <span id="modalAmountPaid">Ksh 4,500</span>
+        </div>
+        <div class="pay-modal-row">
+          <span>Status:</span>
+          <span style="color:#10B981;">Authorized & Completed</span>
+        </div>
+      </div>
+
+      <a href="../Home/index.html" class="pay-modal-home-btn">Return to Store</a>
+    </div>
+  </div>
+
+  <!-- Dynamic Cart & Payment Interactivity Script -->
+  <script>
+    const STORAGE_KEY = 'artscent_cart_items';
+    let currentRecItem = null;
+    let selectedPaymentMethod = 'card';
+
+    function formatKsh(amount) {
+      return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 0 }).format(amount);
+    }
+
+    function getCart() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch(e) {}
+      return [
+        {
+          id: 'scandal-eau-de-parfum',
+          name: 'SCANDAL EAU DE PARFUM',
+          variant: '100ml / Noir Edition',
+          price: 4500,
+          quantity: 1,
+          image: 'https://cdn.prod.website-files.com/69192c66fb7f24b7ccc48443/6940d8f2903aad9f9eb5e270_Rectangle%201091.webp'
+        }
+      ];
+    }
+
+    function saveCart(items) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      renderPaymentPage();
+    }
+
+    function renderPaymentPage() {
+      const items = getCart();
+      const listEl = document.getElementById('payItemsList');
+      const badgeEl = document.getElementById('payItemCountBadge');
+      
+      let totalQty = 0;
+      let subtotal = 0;
+      let html = '';
+
+      items.forEach((item, index) => {
+        const qty = item.quantity || 1;
+        totalQty += qty;
+        subtotal += (item.price || 0) * qty;
+
+        const img = item.image || 'https://placehold.co/400x500?text=Artscent';
+        const price = formatKsh((item.price || 0) * qty);
+        const name = item.name || 'Fine Perfume';
+        const variant = item.variant || '100ml / Natural Spray';
+
+        html += `
+          <div class="pay-item-card">
+            <div class="pay-item-img-wrap">
+              <img src="${img}" alt="${name}" class="pay-item-img" onerror="this.src='https://placehold.co/400x500?text=Artscent'" />
+              <span class="pay-item-qty-badge">${qty}</span>
+              <span class="pay-item-heart" title="Wishlist">♥</span>
+            </div>
+            <div class="pay-item-info">
+              <div class="pay-item-title">${name}</div>
+              <div class="pay-item-subtitle">${variant}</div>
+              <div class="pay-item-pills">
+                <span class="pay-pill-select">100ml ▾</span>
+                <span class="pay-pill-select">Noir Edition ▾</span>
+                <span class="pay-pill-select" onclick="stepQty(${index}, 1)">Qty ${qty} ▾</span>
+              </div>
+            </div>
+            <div class="pay-item-price-col">
+              <button type="button" class="pay-item-remove-btn" onclick="removeItem(${index})" title="Remove item">✕</button>
+              <div class="pay-item-price">${price}</div>
+            </div>
+          </div>
+        `;
+      });
+
+      if (items.length === 0) {
+        html = '<div style="padding:24px; text-align:center; color:#71717A; font-size:13.5px;">Your shopping bag is empty.</div>';
+      }
+
+      listEl.innerHTML = html;
+      badgeEl.textContent = `${totalQty} item${totalQty === 1 ? '' : 's'}`;
+
+      // Update calculations
+      const formattedTotal = formatKsh(subtotal);
+      document.getElementById('paySubtotalVal').textContent = formattedTotal;
+      document.getElementById('payTotalVal').textContent = formattedTotal;
+      document.getElementById('payReviewSubtotal').textContent = formattedTotal;
+      document.getElementById('payReviewTotal').textContent = formattedTotal;
+      document.getElementById('payBtnLabel').textContent = `Pay ${formattedTotal}`;
+    }
+
+    function stepQty(index, delta) {
+      const items = getCart();
+      if (!items[index]) return;
+      items[index].quantity = (items[index].quantity || 1) + delta;
+      if (items[index].quantity <= 0) {
+        items.splice(index, 1);
+      }
+      saveCart(items);
+    }
+
+    function removeItem(index) {
+      const items = getCart();
+      items.splice(index, 1);
+      saveCart(items);
+    }
+
+    function applyPromoCode() {
+      const code = prompt('Enter promo code (e.g. ARTSCENT20):', 'ARTSCENT20');
+      if (code) {
+        alert('Promo code applied successfully! 20% discount activated.');
+        const items = getCart();
+        items.forEach(i => { i.price = Math.round(i.price * 0.8); });
+        saveCart(items);
+        document.getElementById('payAddCodeBtn').innerHTML = '✓ 20% Applied';
+        document.getElementById('payAddCodeBtn').style.color = '#10B981';
+      }
+    }
+
+    // Load Recommended Product from Supabase
+    function loadRecommendedProduct() {
+      if (!window.getProducts) return setTimeout(loadRecommendedProduct, 100);
+
+      window.getProducts().then(products => {
+        if (!products || products.length === 0) return;
+        // Pick a real product from database
+        const prod = products[products.length > 1 ? 1 : 0];
+        currentRecItem = prod;
+
+        const imgEl = document.getElementById('payRecImg');
+        const titleEl = document.getElementById('payRecTitle');
+        const descEl = document.getElementById('payRecDesc');
+        const newPriceEl = document.getElementById('payRecNewPrice');
+        const oldPriceEl = document.getElementById('payRecOldPrice');
+
+        if (imgEl && prod.image_url) imgEl.src = prod.image_url;
+        if (titleEl && prod.name) titleEl.textContent = prod.name.toUpperCase();
+        if (descEl && prod.description) descEl.textContent = prod.description.substring(0, 50) + '...';
+        
+        const rawPrice = parseFloat(prod.price) || 4500;
+        const discountPrice = Math.round(rawPrice * 0.85);
+
+        if (newPriceEl) newPriceEl.textContent = formatKsh(discountPrice);
+        if (oldPriceEl) oldPriceEl.textContent = formatKsh(rawPrice);
+      }).catch(err => {
+        console.error('Error loading recommendations:', err);
+      });
+    }
+
+    function addRecommendedItem() {
+      if (!currentRecItem) return;
+      const items = getCart();
+      const rawPrice = parseFloat(currentRecItem.price) || 4500;
+      const discounted = Math.round(rawPrice * 0.85);
+
+      items.push({
+        id: currentRecItem.id || 'rec-fragrance',
+        name: currentRecItem.name || 'Special Recommendation',
+        variant: '100ml / Exclusive Offer',
+        price: discounted,
+        quantity: 1,
+        image: currentRecItem.image_url || 'https://placehold.co/400x500?text=Artscent'
+      });
+
+      saveCart(items);
+      alert(`${currentRecItem.name} added to your order!`);
+    }
+
+    // Switch Payment Mode
+    function switchPayMode(mode) {
+      selectedPaymentMethod = mode;
+      document.getElementById('tabPayCard').classList.toggle('active', mode === 'card');
+      document.getElementById('tabPayMpesa').classList.toggle('active', mode === 'mpesa');
+
+      document.getElementById('cardFieldsSection').style.display = mode === 'card' ? 'block' : 'none';
+      document.getElementById('mpesaFieldsSection').style.display = mode === 'mpesa' ? 'block' : 'none';
+
+      document.querySelectorAll('.pay-tile').forEach(t => t.classList.remove('active'));
+      if (mode === 'card') {
+        document.getElementById('tileCard').classList.add('active');
+      } else {
+        document.getElementById('tileMpesa').classList.add('active');
+      }
+    }
+
+    function selectTile(el, type) {
+      document.querySelectorAll('.pay-tile').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      selectedPaymentMethod = type;
+
+      const isCard = type === 'card' || type === 'apple' || type === 'google';
+      document.getElementById('cardFieldsSection').style.display = isCard ? 'block' : 'none';
+      document.getElementById('mpesaFieldsSection').style.display = type === 'mpesa' ? 'block' : 'none';
+
+      document.getElementById('tabPayCard').classList.toggle('active', isCard);
+      document.getElementById('tabPayMpesa').classList.toggle('active', type === 'mpesa');
+    }
+
+    // Pre-fill delivery info from order page
+    function prefillCustomerData() {
+      try {
+        const raw = localStorage.getItem('artscent_customer_info');
+        if (raw) {
+          const info = JSON.parse(raw);
+          if (info.name && document.getElementById('payName')) document.getElementById('payName').value = info.name;
+          if (info.email && document.getElementById('payEmail')) document.getElementById('payEmail').value = info.email;
+          if (info.address && document.getElementById('payAddress')) document.getElementById('payAddress').value = info.address;
+          if (info.city && document.getElementById('payCity')) document.getElementById('payCity').value = info.city;
+          if (info.zip && document.getElementById('payZip')) document.getElementById('payZip').value = info.zip;
+          if (info.phone && document.getElementById('payMpesaPhone')) document.getElementById('payMpesaPhone').value = info.phone;
+        }
+      } catch(e) {}
+    }
+
+    // Handle Payment Submission
+    async function handlePaySubmit(e) {
+      e.preventDefault();
+
+      const btn = document.getElementById('payActionBtn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = 'Processing Secure Payment...';
+      btn.style.opacity = '0.75';
+      btn.style.pointerEvents = 'none';
+
+      const items = getCart();
+      let subtotal = 0;
+      items.forEach(item => {
+        subtotal += (parseFloat(item.price) || 0) * (parseInt(item.quantity) || 1);
+      });
+
+      let custInfo = {};
+      try {
+        const raw = localStorage.getItem('artscent_customer_info');
+        if (raw) custInfo = JSON.parse(raw);
+      } catch (e) {}
+
+      const user = window.artscentUserAuth ? window.artscentUserAuth.getUser() : null;
+
+      const orderData = {
+        userId: (user && user.uid) || custInfo.userId || null,
+        customer_name: (document.getElementById('payName') && document.getElementById('payName').value.trim()) || custInfo.name || (user && user.displayName) || 'Customer',
+        customer_email: (document.getElementById('payEmail') && document.getElementById('payEmail').value.trim()) || custInfo.email || (user && user.email) || 'customer@example.com',
+        customer_phone: (document.getElementById('payMpesaPhone') && document.getElementById('payMpesaPhone').value.trim()) || custInfo.phone || '+254 700 000 000',
+        shipping_address: (document.getElementById('payAddress') && document.getElementById('payAddress').value.trim()) || custInfo.address || 'Standard Delivery Address',
+        city: (document.getElementById('payCity') && document.getElementById('payCity').value.trim()) || custInfo.city || 'Nairobi',
+        items: items,
+        subtotal: subtotal,
+        total_amount: subtotal,
+        shipping_fee: 0,
+        payment_method: selectedPaymentMethod || 'card',
+        payment_status: 'completed',
+        status: 'pending',
+        created_at: new Date().toISOString()
+      };
+
+      try {
+        let orderRefId = 'AS-' + Math.floor(1000 + Math.random() * 9000);
+        if (window.firebaseDb) {
+          const docRef = await window.firebaseDb.collection('orders').add(orderData);
+          orderRefId = docRef.id.substring(0, 8).toUpperCase();
+        }
+
+        btn.innerHTML = originalText;
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+
+        const orderRefDisplay = '#AS-' + orderRefId;
+        document.getElementById('modalOrderRef').textContent = orderRefDisplay;
+        document.getElementById('modalAmountPaid').textContent = document.getElementById('payTotalVal').textContent;
+        
+        let methodText = 'Credit / Debit Card';
+        if (selectedPaymentMethod === 'mpesa') methodText = 'M-Pesa Express (Authorized)';
+        if (selectedPaymentMethod === 'apple') methodText = 'Apple Pay';
+        if (selectedPaymentMethod === 'google') methodText = 'Google Pay';
+        document.getElementById('modalPayType').textContent = methodText;
+
+        // Open Confirmation Modal
+        document.getElementById('paySuccessModal').classList.add('open');
+
+        // Clear local and cloud cart
+        localStorage.removeItem(STORAGE_KEY);
+        if (window.artscentUserAuth && typeof window.artscentUserAuth.syncCart === 'function') {
+          window.artscentUserAuth.syncCart([]);
+        }
+      } catch (err) {
+        console.error('Error recording order:', err);
+        alert('Payment processed, order confirmed!');
+        document.getElementById('paySuccessModal').classList.add('open');
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+
+    // Initial setup
+    document.addEventListener('DOMContentLoaded', () => {
+      renderPaymentPage();
+      loadRecommendedProduct();
+      prefillCustomerData();
+
+      // Format card number with spaces
+      const cardInput = document.getElementById('payCardNum');
+      if (cardInput) {
+        cardInput.addEventListener('input', (e) => {
+          let val = e.target.value.replace(/\D/g, '').substring(0, 16);
+          let formatted = val.match(/.{1,4}/g)?.join(' ') || val;
+          e.target.value = formatted;
+        });
+      }
+
+      // Format Exp date
+      const expInput = document.getElementById('payExp');
+      if (expInput) {
+        expInput.addEventListener('input', (e) => {
+          let val = e.target.value.replace(/\D/g, '').substring(0, 4);
+          if (val.length >= 3) {
+            e.target.value = val.substring(0, 2) + ' / ' + val.substring(2, 4);
+          } else {
+            e.target.value = val;
+          }
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>

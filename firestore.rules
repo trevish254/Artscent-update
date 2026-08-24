@@ -1,0 +1,99 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        (request.auth.token.email == 'kevvprojects@gmail.com' && request.auth.token.email_verified == true) ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Product validation
+    function isValidProduct(data) {
+      return data.keys().hasAll(['name', 'price']) &&
+        data.name is string && data.name.size() > 0 && data.name.size() <= 200 &&
+        data.price is number && data.price >= 0 &&
+        (!('description' in data) || (data.description is string && data.description.size() <= 2000)) &&
+        (!('category' in data) || (data.category is string && data.category.size() <= 100)) &&
+        (!('image_url' in data) || (data.image_url is string && data.image_url.size() <= 1000)) &&
+        (!('volume' in data) || (data.volume is string && data.volume.size() <= 50)) &&
+        (!('featured' in data) || data.featured is bool) &&
+        (!('in_stock' in data) || data.in_stock is bool);
+    }
+
+    // Order validation
+    function isValidOrder(data) {
+      return data.keys().hasAll(['customer_name', 'customer_phone', 'shipping_address', 'items', 'total_amount', 'status']) &&
+        data.customer_name is string && data.customer_name.size() > 0 && data.customer_name.size() <= 150 &&
+        data.customer_phone is string && data.customer_phone.size() > 0 && data.customer_phone.size() <= 50 &&
+        data.shipping_address is string && data.shipping_address.size() > 0 && data.shipping_address.size() <= 500 &&
+        data.items is list && data.items.size() > 0 && data.items.size() <= 50 &&
+        data.total_amount is number && data.total_amount >= 0 &&
+        data.status is string && data.status in ['pending', 'processing', 'completed', 'cancelled'] &&
+        (!('userId' in data) || (data.userId is string && data.userId.size() <= 128)) &&
+        (!('customer_email' in data) || (data.customer_email is string && data.customer_email.size() <= 200)) &&
+        (!('city' in data) || (data.city is string && data.city.size() <= 100)) &&
+        (!('payment_method' in data) || (data.payment_method is string && data.payment_method.size() <= 50)) &&
+        (!('payment_status' in data) || (data.payment_status is string && data.payment_status.size() <= 50));
+    }
+
+    // Products Collection: Public read, Admin write
+    match /products/{productId} {
+      allow read: if true;
+      allow create: if isValidId(productId) && isAdmin() && isValidProduct(incoming());
+      allow update: if isValidId(productId) && isAdmin() && isValidProduct(incoming());
+      allow delete: if isValidId(productId) && isAdmin();
+    }
+
+    // Orders Collection: Customer can create & read their own orders; Admin has full access
+    match /orders/{orderId} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isValidId(orderId) && isValidOrder(incoming()) && incoming().status == 'pending' &&
+        (!('userId' in incoming()) || !isSignedIn() || incoming().userId == request.auth.uid);
+      allow update: if isValidId(orderId) && isAdmin() && isValidOrder(incoming());
+      allow delete: if isValidId(orderId) && isAdmin();
+    }
+
+    // Users Collection: Users manage their own profile and saved cart; Admins can read
+    match /users/{userId} {
+      allow read: if (isSignedIn() && request.auth.uid == userId) || isAdmin();
+      allow create: if (isSignedIn() && request.auth.uid == userId) || isAdmin();
+      allow update: if (isSignedIn() && request.auth.uid == userId) || isAdmin();
+      allow delete: if (isSignedIn() && request.auth.uid == userId) || isAdmin();
+
+      // Sub-collections under user (e.g. cart, saved)
+      match /{subcollection}/{docId} {
+        allow read, write: if (isSignedIn() && request.auth.uid == userId) || isAdmin();
+      }
+    }
+
+    // Admins Collection: Read & write restricted to admins
+    match /admins/{adminId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin() && isValidId(adminId);
+    }
+  }
+}

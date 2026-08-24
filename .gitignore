@@ -1,0 +1,7 @@
+# Ignore python scripts created during local development
+*.py
+_*.py
+
+# Ignore other potential local temp files
+.vscode/
+.DS_Store

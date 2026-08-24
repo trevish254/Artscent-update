@@ -1,0 +1,95 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Catalog perfume or fragrance product item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 200 },
+        "title": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "price": { "type": "number" },
+        "old_price": { "type": "number" },
+        "image_url": { "type": "string", "maxLength": 1000 },
+        "volume": { "type": "string", "maxLength": 50 },
+        "featured": { "type": "boolean" },
+        "in_stock": { "type": "boolean" },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "price"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer purchase order",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "customer_name": { "type": "string", "maxLength": 150 },
+        "customer_email": { "type": "string", "format": "email", "maxLength": 200 },
+        "customer_phone": { "type": "string", "maxLength": 50 },
+        "shipping_address": { "type": "string", "maxLength": 500 },
+        "city": { "type": "string", "maxLength": 100 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "items": { "type": "array" },
+        "total_amount": { "type": "number" },
+        "subtotal": { "type": "number" },
+        "shipping_fee": { "type": "number" },
+        "payment_method": { "type": "string", "maxLength": 50 },
+        "payment_status": { "type": "string", "maxLength": 50 },
+        "status": { "type": "string", "maxLength": 50 },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["customer_name", "customer_phone", "shipping_address", "items", "total_amount", "status"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Customer user profile, saved cart items, and account preferences",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "format": "email", "maxLength": 200 },
+        "displayName": { "type": "string", "maxLength": 150 },
+        "phoneNumber": { "type": "string", "maxLength": 50 },
+        "address": { "type": "string", "maxLength": 500 },
+        "city": { "type": "string", "maxLength": 100 },
+        "cart_items": { "type": "array" },
+        "saved_products": { "type": "array" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Administrator account role",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email", "maxLength": 200 },
+        "role": { "type": "string", "enum": ["admin", "superadmin"] },
+        "created_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Public read and admin managed fragrance product catalog"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Customer order transactions created on checkout"
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Customer user profile and saved items"
+    },
+    "/admins/{adminId}": {
+      "schema": "Admin",
+      "description": "Admin access control whitelist documents"
+    }
+  }
+}

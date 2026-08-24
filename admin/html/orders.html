@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html class="w-mod-js w-mod-ix wf-opensans-n3-active wf-opensans-i3-active wf-opensans-n4-active wf-opensans-i4-active wf-opensans-n6-active wf-opensans-i6-active wf-opensans-n7-active wf-opensans-i7-active wf-opensans-n8-active wf-opensans-i8-active wf-worksans-n1-active wf-worksans-n2-active wf-worksans-n3-active wf-worksans-n4-active wf-worksans-n5-active wf-worksans-n6-active wf-worksans-n7-active wf-worksans-n8-active wf-worksans-n9-active wf-materialsymbolsoutlined-n1-active wf-materialsymbolsoutlined-n2-active wf-materialsymbolsoutlined-n3-active wf-materialsymbolsoutlined-n4-active wf-inter-n1-active wf-inter-n2-active wf-inter-n3-active wf-inter-n4-active wf-inter-n5-active wf-inter-n6-active wf-inter-n7-active wf-inter-n8-active wf-inter-n9-active wf-sofia-n4-active wf-sofiasans-n1-active wf-sofiasans-n2-active wf-sofiasans-n3-active wf-sofiasans-n4-active wf-sofiasans-n5-active wf-sofiasans-n6-active wf-sofiasans-n7-active wf-sofiasans-n8-active wf-sofiasans-n9-active wf-active" data-wf-domain="task-dasher.webflow.io" data-wf-page="64e04605d13dc7f4010453e8" data-wf-site="64e04605d13dc7f401045408" lang="en">
+ <head>
+  <style>
+    .wf-force-outline-none[tabindex="-1"]:focus{outline:none;}
+  </style>
+  <meta charset="utf-8"/>
+  <link crossorigin="anonymous" href="https://assets-global.website-files.com" rel="preconnect"/>
+  <title>Orders & Shipping Fulfillment | ArtScent Admin</title>
+  <meta content="Manage luxury customer orders, track shipping logistics, fulfillment statuses, and customer delivery details." name="description"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <link href="../css/task-dasher.webflow.f243a6447.css" rel="stylesheet" type="text/css"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="anonymous" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <script src="../js/webfont.js" type="text/javascript"></script>
+  <link href="../css/fonts.css" media="all" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <style>
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes pulseGreen {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulseGreen 2s infinite;
+    }
+    .order-table-row:hover {
+      background-color: #f8fafc !important;
+    }
+    .order-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08) !important;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-delivered { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .status-shipped { background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; }
+    .status-processing { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .status-pending { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    .status-cancelled { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+
+    .pay-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .pay-mpesa { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+    .pay-card { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+    .pay-cod { background: #fef9c3; color: #854d0e; border: 1px solid #fef08a; }
+
+    /* Timeline Stepper */
+    .timeline-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      position: relative;
+      padding-bottom: 20px;
+    }
+    .timeline-step:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 30px;
+      bottom: 0;
+      width: 2px;
+      background: #e2e8f0;
+    }
+    .timeline-step.completed:not(:last-child)::before {
+      background: #4a5cff;
+    }
+    .timeline-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f1f5f9;
+      color: #94a3b8;
+      font-size: 16px;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    .timeline-step.completed .timeline-icon {
+      background: #4a5cff;
+      color: white;
+    }
+    .timeline-step.active .timeline-icon {
+      background: #e0e7ff;
+      color: #4a5cff;
+      border: 2px solid #4a5cff;
+    }
+  </style>
+
+  <!-- Firebase Integration -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+  <script src="../../js/firebase-client.js"></script>
+  <script src="../../js/products-api.js"></script>
+ </head>
+ <body class="body">
+  <section class="section fade-in-interaction" style="opacity: 1;">
+   <div class="ghost-header"></div>
+   <div class="main-flex-wrapper">
+    
+        <!-- Ultra-Luxury Glassmorphism Sidebar -->
+    <div class="sidebar">
+     <div class="logo">
+      <div class="logo-flex" style="display: flex; align-items: center; justify-content: space-between; padding: 0 4px;">
+       <a class="flex gap-4px w-inline-block" href="../index.html" style="text-decoration: none; display: flex; align-items: center; gap: 9px;">
+        <img src="https://res.cloudinary.com/dfedn2xsg/image/upload/v1787538552/c8d4e390-e505-4afb-a15b-0e57e96bcc8e-removebg-preview_jpe5pu.png" alt="ArtScent Logo" style="height: 32px; width: auto; object-fit: contain;" />
+        <h3 class="logo-title" style="margin: 0; font-size: 17.5px; font-weight: 800; color: #0f172a; letter-spacing: -0.02em;">ArtScent</h3>
+       </a>
+      </div>
+     </div>
+
+     <div class="sidebar-main">
+      <a class="sidebar-flex w-inline-block" href="../index.html">
+       <span class="material-symbols-outlined side-bar-icon">dashboard</span>
+       <h5 class="sidebar-title">Dashboard</h5>
+      </a>
+
+      <a class="sidebar-flex w-inline-block w--current" href="orders.html">
+       <span class="material-symbols-outlined side-bar-icon">shopping_bag</span>
+       <h5 class="sidebar-title">Orders</h5>
+       <span class="sidebar-badge-count">8</span>
+      </a>
+
+      <a class="sidebar-flex w-inline-block" href="products.html">
+       <span class="material-symbols-outlined side-bar-icon">inventory_2</span>
+       <h5 class="sidebar-title">Products</h5>
+      </a>
+
+      <a class="sidebar-flex w-inline-block" href="users.html">
+       <span class="material-symbols-outlined side-bar-icon">group</span>
+       <h5 class="sidebar-title">Users</h5>
+      </a>
+
+      <a class="sidebar-flex w-inline-block" href="messages.html">
+       <span class="material-symbols-outlined side-bar-icon">chat</span>
+       <h5 class="sidebar-title">Messages</h5>
+       <span class="sidebar-badge-count">3</span>
+      </a>
+
+      <a class="sidebar-flex w-inline-block" href="notifications.html">
+       <span class="material-symbols-outlined side-bar-icon">notifications</span>
+       <h5 class="sidebar-title">Notifications</h5>
+      </a>
+
+      <a class="sidebar-flex w-inline-block" href="settings.html">
+       <span class="material-symbols-outlined side-bar-icon">settings</span>
+       <h5 class="sidebar-title">Settings</h5>
+      </a>
+     </div>
+
+     <div class="sidebar-utilities" style="margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(226, 232, 240, 0.7); display: flex; flex-direction: column; gap: 5px;">
+      <a class="sidebar-flex w-inline-block" href="profile.html">
+       <span class="material-symbols-outlined side-bar-icon">person</span>
+       <h5 class="sidebar-title">Admin Profile</h5>
+      </a>
+      <a class="sidebar-flex w-inline-block" href="../../Home/index.html" target="_blank" style="background: rgba(241, 245, 249, 0.65);">
+       <span class="material-symbols-outlined side-bar-icon" style="color: #4a5cff;">open_in_new</span>
+       <h5 class="sidebar-title" style="color: #4a5cff;">View Live Store</h5>
+      </a>
+     </div>
+    </div>
+    <div class="dashboard" style="background: #f8fafc; min-height: 100vh;">
+     <div class="dashboard-header" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid #e2e8f0; padding: 16px 36px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h2 style="font-size: 24px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0; letter-spacing: -0.02em;">Orders & Shipping Fulfillment</h2>
+        <p style="font-size: 13.5px; color: #64748b; margin: 0;">Track customer purchases, live shipping logistics, M-Pesa payments, and deliveries.</p>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button id="export-orders-btn" style="display: flex; align-items: center; gap: 6px; padding: 9px 16px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; font-weight: 600; color: #334155; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+          <span class="material-symbols-outlined" style="font-size: 18px;">download</span>
+          Export Orders (CSV)
+        </button>
+        <button id="create-order-btn" style="display: flex; align-items: center; gap: 6px; padding: 9px 18px; background: linear-gradient(135deg, #4a5cff 0%, #3644cc 100%); border: none; border-radius: 10px; font-size: 13px; font-weight: 600; color: #ffffff; cursor: pointer; box-shadow: 0 4px 12px rgba(74,92,255,0.25);">
+          <span class="material-symbols-outlined" style="font-size: 18px;">add_shopping_cart</span>
+          + Create Manual Order
+        </button>
+      </div>
+     </div>
+
+     <div class="dashboard-details" style="padding: 28px 36px;">
+      
+      <!-- Executive KPI Cards -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 18px; margin-bottom: 26px;">
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 13px; font-weight: 600; color: #64748b;">Total Orders</span>
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: #eff6ff; color: #3b82f6; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="font-size: 20px;">receipt_long</span>
+            </div>
+          </div>
+          <div style="font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 4px;" id="stat-total-orders">148</div>
+          <div style="font-size: 12px; color: #16a34a; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+            <span class="material-symbols-outlined" style="font-size: 15px;">trending_up</span>
+            +18.4% from last week
+          </div>
+        </div>
+
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 13px; font-weight: 600; color: #64748b;">Pending & Processing</span>
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="font-size: 20px;">pending_actions</span>
+            </div>
+          </div>
+          <div style="font-size: 28px; font-weight: 800; color: #d97706; margin-bottom: 4px;" id="stat-pending-orders">12</div>
+          <div style="font-size: 12px; color: #64748b; font-weight: 500;">Requires warehouse dispatch</div>
+        </div>
+
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 13px; font-weight: 600; color: #64748b;">Shipped / In Transit</span>
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: #e0e7ff; color: #4a5cff; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="font-size: 20px;">local_shipping</span>
+            </div>
+          </div>
+          <div style="font-size: 28px; font-weight: 800; color: #4a5cff; margin-bottom: 4px;" id="stat-shipped-orders">28</div>
+          <div style="font-size: 12px; color: #4a5cff; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+            <span class="pulse-dot"></span> Live courier routes
+          </div>
+        </div>
+
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 13px; font-weight: 600; color: #64748b;">Total Net Revenue</span>
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: #dcfce7; color: #15803d; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="font-size: 20px;">payments</span>
+            </div>
+          </div>
+          <div style="font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 4px;" id="stat-total-revenue">KES 1,842,500</div>
+          <div style="font-size: 12px; color: #16a34a; font-weight: 600;">$14,170 USD Equivalent</div>
+        </div>
+      </div>
+
+      <!-- Controls & Filter Toolbar -->
+      <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px 20px; margin-bottom: 22px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; flex: 1;">
+          <!-- Search Bar -->
+          <div style="position: relative; min-width: 280px; flex: 1;">
+            <span class="material-symbols-outlined" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 18px; color: #94a3b8;">search</span>
+            <input type="text" id="order-search-input" placeholder="Search by Order #, Customer, Email, Fragrance or Tracking ID..." style="width: 100%; box-sizing: border-box; padding: 9px 12px 9px 38px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; outline: none; background: #f8fafc; transition: all 0.2s;" />
+          </div>
+
+          <!-- Status Filter -->
+          <select id="status-filter" style="padding: 9px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; background: #ffffff; color: #334155; outline: none; cursor: pointer;">
+            <option value="all">All Fulfillment Statuses</option>
+            <option value="Processing">Processing (Pending Dispatch)</option>
+            <option value="Shipped">Shipped (In Transit)</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Pending">Payment Pending</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+
+          <!-- Payment Filter -->
+          <select id="payment-filter" style="padding: 9px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; background: #ffffff; color: #334155; outline: none; cursor: pointer;">
+            <option value="all">All Payment Methods</option>
+            <option value="M-Pesa">M-Pesa STK Push</option>
+            <option value="Credit Card">Credit / Debit Card</option>
+            <option value="Cash on Delivery">Cash on Delivery</option>
+          </select>
+        </div>
+
+        <!-- View Switcher -->
+        <div style="display: flex; gap: 4px; background: #f1f5f9; padding: 4px; border-radius: 10px;">
+          <button id="view-table-btn" style="border: none; background: #ffffff; color: #0f172a; padding: 6px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
+            <span class="material-symbols-outlined" style="font-size: 17px;">table_rows</span>
+            Table
+          </button>
+          <button id="view-grid-btn" style="border: none; background: transparent; color: #64748b; padding: 6px 12px; border-radius: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+            <span class="material-symbols-outlined" style="font-size: 17px;">grid_view</span>
+            Cards
+          </button>
+        </div>
+      </div>
+
+      <!-- Orders Table Container -->
+      <div id="orders-table-container" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.02);">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+          <thead>
+            <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0; font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.04em;">
+              <th style="padding: 14px 20px;">Order ID & Date</th>
+              <th style="padding: 14px 18px;">Customer</th>
+              <th style="padding: 14px 18px;">Purchased Items</th>
+              <th style="padding: 14px 18px;">Total & Payment</th>
+              <th style="padding: 14px 18px;">Fulfillment Status</th>
+              <th style="padding: 14px 18px;">Shipping Destination</th>
+              <th style="padding: 14px 20px; text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="orders-table-body" style="font-size: 13.5px; color: #1e293b;">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Orders Grid Cards Container -->
+      <div id="orders-grid-container" style="display: none; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px;">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="orders-empty-state" style="display: none; text-align: center; padding: 60px 20px; background: #ffffff; border-radius: 16px; border: 1px dashed #cbd5e1; margin-top: 10px;">
+        <span class="material-symbols-outlined" style="font-size: 48px; color: #94a3b8; margin-bottom: 12px;">receipt</span>
+        <h4 style="font-size: 16px; font-weight: 700; color: #334155; margin: 0 0 6px 0;">No matching orders found</h4>
+        <p style="font-size: 13px; color: #64748b; margin: 0;">Try adjusting your search terms or filters.</p>
+      </div>
+
+     </div>
+    </div>
+   </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- ORDER DETAILS & SHIPPING MODAL DRAWER      -->
+  <!-- ========================================== -->
+  <div id="order-details-modal" style="display: none; position: fixed; inset: 0; z-index: 999999; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;">
+    <div style="background: #ffffff; width: 100%; max-width: 860px; height: 90vh; max-height: 860px; min-height: 580px; border-radius: 20px; box-shadow: 0 25px 60px -15px rgba(0,0,0,0.3); display: flex; flex-direction: column; overflow: hidden; animation: modalFadeIn 0.25s ease-out;">
+      
+      <!-- Modal Header -->
+      <div style="padding: 18px 24px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: #e0e7ff; color: #4a5cff; display: flex; align-items: center; justify-content: center;">
+            <span class="material-symbols-outlined" style="font-size: 22px;">local_shipping</span>
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <h3 id="modal-order-id" style="margin: 0; font-size: 18px; font-weight: 800; color: #0f172a;">#ORD-9821</h3>
+              <span id="modal-order-status-badge" class="status-badge status-shipped">Shipped</span>
+            </div>
+            <span id="modal-order-date" style="font-size: 12.5px; color: #64748b;">Placed on Aug 24, 2026 at 2:15 AM</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <button id="modal-print-btn" style="background: white; border: 1px solid #cbd5e1; border-radius: 8px; padding: 6px 12px; font-size: 12.5px; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">print</span>
+            Print Invoice
+          </button>
+          <button id="close-order-modal-btn" style="background: transparent; border: none; font-size: 22px; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%;">✕</button>
+        </div>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div style="flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 24px;">
+        
+        <!-- Fulfillment Stepper -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px; margin-bottom: 22px;">
+          <h4 style="margin: 0 0 14px 0; font-size: 13.5px; font-weight: 700; color: #334155; text-transform: uppercase; letter-spacing: 0.03em;">Fulfillment Status Tracker</h4>
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; position: relative;">
+            <div id="step-1" class="timeline-step completed" style="flex-direction: column; align-items: center; text-align: center; padding-bottom: 0;">
+              <div class="timeline-icon"><span class="material-symbols-outlined" style="font-size: 18px;">receipt</span></div>
+              <div style="font-size: 12px; font-weight: 700; color: #0f172a; margin-top: 6px;">Order Placed</div>
+              <div style="font-size: 11px; color: #64748b;">Payment Confirmed</div>
+            </div>
+            <div id="step-2" class="timeline-step completed" style="flex-direction: column; align-items: center; text-align: center; padding-bottom: 0;">
+              <div class="timeline-icon"><span class="material-symbols-outlined" style="font-size: 18px;">inventory_2</span></div>
+              <div style="font-size: 12px; font-weight: 700; color: #0f172a; margin-top: 6px;">Packed</div>
+              <div style="font-size: 11px; color: #64748b;">Quality Checked</div>
+            </div>
+            <div id="step-3" class="timeline-step completed" style="flex-direction: column; align-items: center; text-align: center; padding-bottom: 0;">
+              <div class="timeline-icon"><span class="material-symbols-outlined" style="font-size: 18px;">local_shipping</span></div>
+              <div style="font-size: 12px; font-weight: 700; color: #0f172a; margin-top: 6px;">Dispatched</div>
+              <div style="font-size: 11px; color: #64748b;">In Transit</div>
+            </div>
+            <div id="step-4" class="timeline-step" style="flex-direction: column; align-items: center; text-align: center; padding-bottom: 0;">
+              <div class="timeline-icon"><span class="material-symbols-outlined" style="font-size: 18px;">verified</span></div>
+              <div style="font-size: 12px; font-weight: 700; color: #64748b; margin-top: 6px;">Delivered</div>
+              <div style="font-size: 11px; color: #94a3b8;">Customer Signed</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 22px;">
+          <!-- Customer & Contact Info -->
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <h4 style="margin: 0; font-size: 13.5px; font-weight: 700; color: #334155; text-transform: uppercase;">Customer Profile</h4>
+              <span class="pay-badge pay-mpesa" id="modal-customer-type">VIP Member</span>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
+              <img id="modal-customer-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;" />
+              <div>
+                <div id="modal-customer-name" style="font-weight: 700; color: #0f172a; font-size: 14.5px;">Elena Rostova</div>
+                <div id="modal-customer-email" style="font-size: 12.5px; color: #64748b;">elena.rostova@luxury.com</div>
+              </div>
+            </div>
+            <div style="font-size: 12.5px; color: #475569; display: flex; flex-direction: column; gap: 6px;">
+              <div><strong>Phone:</strong> <span id="modal-customer-phone">+254 712 345 678</span></div>
+              <div><strong>Delivery Note:</strong> <span id="modal-order-notes" style="font-style: italic; color: #64748b;">"Please ring doorbell upon arrival at gate."</span></div>
+            </div>
+          </div>
+
+          <!-- Shipping & Courier Details -->
+          <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <h4 style="margin: 0; font-size: 13.5px; font-weight: 700; color: #334155; text-transform: uppercase;">Shipping Destination</h4>
+              <span class="pay-badge pay-card" id="modal-courier-name">DHL Express</span>
+            </div>
+            <div style="font-size: 13px; color: #334155; line-height: 1.5; margin-bottom: 12px;">
+              <div id="modal-ship-address" style="font-weight: 600;">14 Forest Ridge Road, Karen Gardens</div>
+              <div id="modal-ship-city">Nairobi, 00100</div>
+              <div id="modal-ship-country" style="color: #64748b;">Kenya</div>
+            </div>
+            <div style="background: #f1f5f9; padding: 8px 12px; border-radius: 8px; font-size: 12px; color: #475569; display: flex; justify-content: space-between; align-items: center;">
+              <span>Tracking #: <strong id="modal-tracking-code">DHL-9842-8172</strong></span>
+              <a href="#" style="color: #4a5cff; font-weight: 600; text-decoration: none;">Track Package ↗</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ordered Items Table -->
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 14px; overflow: hidden; margin-bottom: 20px;">
+          <div style="padding: 14px 18px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; font-size: 13px; font-weight: 700; color: #334155; text-transform: uppercase;">
+            Ordered Fragrances & Quantities
+          </div>
+          <div id="modal-items-list" style="padding: 12px 18px;">
+            <!-- Items rendered dynamically -->
+          </div>
+          <div style="padding: 14px 18px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end;">
+            <div style="width: 260px; font-size: 13px; color: #475569; display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; justify-content: space-between;"><span>Subtotal:</span> <strong id="modal-subtotal">KES 24,000</strong></div>
+              <div style="display: flex; justify-content: space-between;"><span>Shipping Fee:</span> <strong id="modal-shipping-fee">FREE</strong></div>
+              <div style="display: flex; justify-content: space-between;"><span>Discount / Promo:</span> <strong style="color: #16a34a;" id="modal-discount">- KES 0</strong></div>
+              <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 800; color: #0f172a; border-top: 1px solid #cbd5e1; padding-top: 6px; margin-top: 4px;">
+                <span>Total Amount:</span>
+                <span id="modal-grand-total" style="color: #4a5cff;">KES 24,000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Update Fulfillment Status Form -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h4 style="margin: 0 0 4px 0; font-size: 14px; font-weight: 700; color: #0f172a;">Change Fulfillment Status</h4>
+            <p style="margin: 0; font-size: 12.5px; color: #64748b;">Updating this will alert the customer with a dispatch notification.</p>
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <select id="modal-change-status-select" style="padding: 8px 14px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; font-weight: 600; outline: none; background: white;">
+              <option value="Processing">Processing</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+            <button id="modal-save-status-btn" style="background: #4a5cff; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">
+              Update Order
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Application Logic -->
+  <script>
+    // Sample Luxury Fragrance Orders Data
+    var ordersData = [
+      {
+        id: "ORD-9021",
+        date: "2026-08-24 02:45 AM",
+        customer: {
+          name: "Elena Rostova",
+          email: "elena.rostova@luxury.com",
+          phone: "+254 712 345 678",
+          type: "VIP Member",
+          avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100"
+        },
+        items: [
+          { name: "Daisy Love Eau So Sweet", size: "100ml", qty: 1, price: 18500, img: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=100" },
+          { name: "Velvet Amber Discovery Kit", size: "15ml x 3", qty: 1, price: 5500, img: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?w=100" }
+        ],
+        subtotal: 24000,
+        shippingFee: 0,
+        discount: 0,
+        total: 24000,
+        currency: "KES",
+        payment: { method: "M-Pesa STK", status: "Paid", txId: "MP-984201938" },
+        status: "Shipped",
+        shipping: {
+          courier: "DHL Express",
+          tracking: "DHL-9842-8172",
+          address: "14 Forest Ridge Road, Karen Gardens",
+          city: "Nairobi",
+          country: "Kenya",
+          notes: "Please deliver to front gate security desk."
+        }
+      },
+      {
+        id: "ORD-9020",
+        date: "2026-08-24 01:15 AM",
+        customer: {
+          name: "Alexander Sterling",
+          email: "sterling.alex@invest.co.uk",
+          phone: "+254 722 884 910",
+          type: "VIP Member",
+          avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100"
+        },
+        items: [
+          { name: "Wild Oud & Smoked Tonka", size: "100ml Extrait", qty: 2, price: 21000, img: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=100" }
+        ],
+        subtotal: 42000,
+        shippingFee: 0,
+        discount: 2000,
+        total: 40000,
+        currency: "KES",
+        payment: { method: "Credit Card", status: "Paid", txId: "VISA-4491-0283" },
+        status: "Processing",
+        shipping: {
+          courier: "G4S Secure Courier",
+          tracking: "G4S-294012",
+          address: "Penthouse Suite 12, Westlands Heights",
+          city: "Nairobi",
+          country: "Kenya",
+          notes: "Call 15 mins before arrival."
+        }
+      },
+      {
+        id: "ORD-9019",
+        date: "2026-08-23 09:30 PM",
+        customer: {
+          name: "Amina Al-Mansoor",
+          email: "amina.mansoor@dubai-creations.ae",
+          phone: "+254 733 991 223",
+          type: "Customer",
+          avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100"
+        },
+        items: [
+          { name: "Royal Jasmine & Golden Saffron", size: "50ml", qty: 1, price: 16500, img: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=100" }
+        ],
+        subtotal: 16500,
+        shippingFee: 500,
+        discount: 0,
+        total: 17000,
+        currency: "KES",
+        payment: { method: "M-Pesa STK", status: "Paid", txId: "MP-782019481" },
+        status: "Delivered",
+        shipping: {
+          courier: "Rider Express",
+          tracking: "RD-88491",
+          address: "Nyali Beach Road, Villa 4",
+          city: "Mombasa",
+          country: "Kenya",
+          notes: "Left at reception desk."
+        }
+      },
+      {
+        id: "ORD-9018",
+        date: "2026-08-23 04:10 PM",
+        customer: {
+          name: "David Kimani",
+          email: "kimani.david@techkenya.io",
+          phone: "+254 790 123 456",
+          type: "Customer",
+          avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100"
+        },
+        items: [
+          { name: "Midnight Rose & Sandalwood", size: "100ml", qty: 1, price: 19500, img: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=100" }
+        ],
+        subtotal: 19500,
+        shippingFee: 0,
+        discount: 0,
+        total: 19500,
+        currency: "KES",
+        payment: { method: "M-Pesa STK", status: "Paid", txId: "MP-559281720" },
+        status: "Shipped",
+        shipping: {
+          courier: "DHL Express",
+          tracking: "DHL-5582-9012",
+          address: "Riverside Drive, Block B, Apt 3",
+          city: "Nairobi",
+          country: "Kenya",
+          notes: "Leave with caretaker if unavailable."
+        }
+      },
+      {
+        id: "ORD-9017",
+        date: "2026-08-22 08:20 PM",
+        customer: {
+          name: "Chloe Vane",
+          email: "chloe.vane@parisfashion.fr",
+          phone: "+33 612 345 678",
+          type: "VIP Member",
+          avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100"
+        },
+        items: [
+          { name: "Citrus Blossom Discovery Set", size: "Box of 5", qty: 2, price: 9500, img: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?w=100" }
+        ],
+        subtotal: 19000,
+        shippingFee: 1500,
+        discount: 1000,
+        total: 19500,
+        currency: "KES",
+        payment: { method: "Credit Card", status: "Paid", txId: "MC-8819-3301" },
+        status: "Delivered",
+        shipping: {
+          courier: "FedEx International",
+          tracking: "FDX-774910293",
+          address: "Rue Saint-Honoré 24",
+          city: "Paris",
+          country: "France",
+          notes: "International customs cleared."
+        }
+      },
+      {
+        id: "ORD-9016",
+        date: "2026-08-22 11:05 AM",
+        customer: {
+          name: "Marcus Vance",
+          email: "vance.m@consulting.com",
+          phone: "+254 711 678 901",
+          type: "Customer",
+          avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100"
+        },
+        items: [
+          { name: "Imperial Cedar & Vetiver", size: "100ml", qty: 1, price: 17500, img: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=100" }
+        ],
+        subtotal: 17500,
+        shippingFee: 500,
+        discount: 0,
+        total: 18000,
+        currency: "KES",
+        payment: { method: "Cash on Delivery", status: "Pending", txId: "COD-9016" },
+        status: "Processing",
+        shipping: {
+          courier: "Rider Express",
+          tracking: "RD-99014",
+          address: "Kilimani, Wood Avenue Court 8",
+          city: "Nairobi",
+          country: "Kenya",
+          notes: "Collect cash KES 18,000 on delivery."
+        }
+      }
+    ];
+
+    var currentView = "table";
+    var activeOrder = null;
+
+    function getStatusBadge(status) {
+      if (status === "Delivered") return '<span class="status-badge status-delivered"><span class="material-symbols-outlined" style="font-size: 14px;">check_circle</span> Delivered</span>';
+      if (status === "Shipped") return '<span class="status-badge status-shipped"><span class="material-symbols-outlined" style="font-size: 14px;">local_shipping</span> Shipped</span>';
+      if (status === "Processing") return '<span class="status-badge status-processing"><span class="material-symbols-outlined" style="font-size: 14px;">hourglass_top</span> Processing</span>';
+      if (status === "Cancelled") return '<span class="status-badge status-cancelled"><span class="material-symbols-outlined" style="font-size: 14px;">cancel</span> Cancelled</span>';
+      return '<span class="status-badge status-pending"><span class="material-symbols-outlined" style="font-size: 14px;">error</span> Pending</span>';
+    }
+
+    function getPaymentBadge(method) {
+      if (method.includes("M-Pesa")) return '<span class="pay-badge pay-mpesa">M-Pesa STK</span>';
+      if (method.includes("Card")) return '<span class="pay-badge pay-card">Card</span>';
+      return '<span class="pay-badge pay-cod">Cash on Delivery</span>';
+    }
+
+    function renderOrders() {
+      var query = (document.getElementById("order-search-input").value || "").toLowerCase();
+      var statusFilter = document.getElementById("status-filter").value;
+      var paymentFilter = document.getElementById("payment-filter").value;
+
+      var filtered = ordersData.filter(function(o) {
+        var matchQuery = o.id.toLowerCase().includes(query) ||
+                         o.customer.name.toLowerCase().includes(query) ||
+                         o.customer.email.toLowerCase().includes(query) ||
+                         o.customer.phone.toLowerCase().includes(query) ||
+                         o.shipping.city.toLowerCase().includes(query) ||
+                         o.shipping.tracking.toLowerCase().includes(query) ||
+                         o.items.some(function(it) { return it.name.toLowerCase().includes(query); });
+        
+        var matchStatus = (statusFilter === "all") || (o.status === statusFilter);
+        var matchPay = (paymentFilter === "all") || (o.payment.method.includes(paymentFilter));
+
+        return matchQuery && matchStatus && matchPay;
+      });
+
+      var tbody = document.getElementById("orders-table-body");
+      var grid = document.getElementById("orders-grid-container");
+      var empty = document.getElementById("orders-empty-state");
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = "";
+        grid.innerHTML = "";
+        empty.style.display = "block";
+        return;
+      }
+      empty.style.display = "none";
+
+      // Render Table Rows
+      var tableHtml = "";
+      filtered.forEach(function(o) {
+        var itemsSummary = o.items.map(function(i) { return i.name + ' (' + i.qty + 'x)'; }).join(', ');
+        if (itemsSummary.length > 34) itemsSummary = itemsSummary.substring(0, 32) + '...';
+
+        tableHtml += `
+          <tr class="order-table-row" style="border-bottom: 1px solid #f1f5f9; transition: background 0.15s;">
+            <td style="padding: 16px 20px;">
+              <div style="font-weight: 800; color: #4a5cff; font-family: monospace; font-size: 14px;">${o.id}</div>
+              <div style="font-size: 12px; color: #64748b;">${o.date}</div>
+            </td>
+            <td style="padding: 16px 18px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="${o.customer.avatar}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;" />
+                <div>
+                  <div style="font-weight: 700; color: #0f172a;">${o.customer.name}</div>
+                  <div style="font-size: 12px; color: #64748b;">${o.customer.phone}</div>
+                </div>
+              </div>
+            </td>
+            <td style="padding: 16px 18px;">
+              <div style="font-weight: 600; color: #334155;">${itemsSummary}</div>
+              <div style="font-size: 12px; color: #64748b;">${o.items.length} product(s)</div>
+            </td>
+            <td style="padding: 16px 18px;">
+              <div style="font-weight: 800; color: #0f172a;">${o.currency} ${o.total.toLocaleString()}</div>
+              <div>${getPaymentBadge(o.payment.method)}</div>
+            </td>
+            <td style="padding: 16px 18px;">
+              ${getStatusBadge(o.status)}
+            </td>
+            <td style="padding: 16px 18px;">
+              <div style="font-weight: 600; color: #334155;">${o.shipping.city}, ${o.shipping.country}</div>
+              <div style="font-size: 11.5px; color: #64748b;">${o.shipping.courier}</div>
+            </td>
+            <td style="padding: 16px 20px; text-align: right;">
+              <button class="view-order-btn" data-id="${o.id}" style="background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">visibility</span>
+                Details
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = tableHtml;
+
+      // Render Grid Cards
+      var gridHtml = "";
+      filtered.forEach(function(o) {
+        gridHtml += `
+          <div class="order-card" style="background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); transition: all 0.2s;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <div>
+                <span style="font-family: monospace; font-weight: 800; font-size: 15px; color: #4a5cff;">${o.id}</span>
+                <span style="font-size: 12px; color: #64748b; margin-left: 8px;">${o.date}</span>
+              </div>
+              ${getStatusBadge(o.status)}
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: center; padding-bottom: 12px; margin-bottom: 12px; border-bottom: 1px solid #f1f5f9;">
+              <img src="${o.customer.avatar}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;" />
+              <div>
+                <div style="font-weight: 700; color: #0f172a; font-size: 14px;">${o.customer.name}</div>
+                <div style="font-size: 12px; color: #64748b;">${o.customer.email}</div>
+              </div>
+            </div>
+
+            <div style="font-size: 12.5px; color: #475569; margin-bottom: 12px;">
+              <div style="font-weight: 600; margin-bottom: 4px;">Items:</div>
+              ${o.items.map(function(i) { return '<div style="color: #64748b;">• ' + i.name + ' (' + i.qty + 'x)</div>'; }).join('')}
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px 12px; border-radius: 10px; margin-bottom: 14px;">
+              <div>
+                <div style="font-size: 11px; color: #64748b;">Total Amount</div>
+                <div style="font-weight: 800; color: #0f172a; font-size: 15px;">${o.currency} ${o.total.toLocaleString()}</div>
+              </div>
+              ${getPaymentBadge(o.payment.method)}
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-size: 12px; color: #64748b;">
+                <span class="material-symbols-outlined" style="font-size: 14px; vertical-align: middle;">location_on</span>
+                ${o.shipping.city}
+              </div>
+              <button class="view-order-btn" data-id="${o.id}" style="background: #4a5cff; border: none; color: white; padding: 7px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">visibility</span>
+                View Details
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      grid.innerHTML = gridHtml;
+    }
+
+    function openOrderModal(orderId) {
+      var order = ordersData.find(function(o) { return o.id === orderId; });
+      if (!order) return;
+      activeOrder = order;
+
+      document.getElementById("modal-order-id").textContent = order.id;
+      document.getElementById("modal-order-date").textContent = "Placed on " + order.date;
+      
+      var badge = document.getElementById("modal-order-status-badge");
+      badge.className = "status-badge status-" + order.status.toLowerCase();
+      badge.textContent = order.status;
+
+      document.getElementById("modal-customer-name").textContent = order.customer.name;
+      document.getElementById("modal-customer-email").textContent = order.customer.email;
+      document.getElementById("modal-customer-phone").textContent = order.customer.phone;
+      document.getElementById("modal-customer-avatar").src = order.customer.avatar;
+      document.getElementById("modal-customer-type").textContent = order.customer.type;
+      document.getElementById("modal-order-notes").textContent = '"' + (order.shipping.notes || 'No special instructions') + '"';
+
+      document.getElementById("modal-courier-name").textContent = order.shipping.courier;
+      document.getElementById("modal-ship-address").textContent = order.shipping.address;
+      document.getElementById("modal-ship-city").textContent = order.shipping.city;
+      document.getElementById("modal-ship-country").textContent = order.shipping.country;
+      document.getElementById("modal-tracking-code").textContent = order.shipping.tracking;
+
+      // Update Stepper
+      var steps = ["step-1", "step-2", "step-3", "step-4"];
+      steps.forEach(function(s) { document.getElementById(s).className = "timeline-step"; });
+
+      if (order.status === "Pending") {
+        document.getElementById("step-1").className = "timeline-step active";
+      } else if (order.status === "Processing") {
+        document.getElementById("step-1").className = "timeline-step completed";
+        document.getElementById("step-2").className = "timeline-step active";
+      } else if (order.status === "Shipped") {
+        document.getElementById("step-1").className = "timeline-step completed";
+        document.getElementById("step-2").className = "timeline-step completed";
+        document.getElementById("step-3").className = "timeline-step active";
+      } else if (order.status === "Delivered") {
+        document.getElementById("step-1").className = "timeline-step completed";
+        document.getElementById("step-2").className = "timeline-step completed";
+        document.getElementById("step-3").className = "timeline-step completed";
+        document.getElementById("step-4").className = "timeline-step completed";
+      }
+
+      // Render Items List
+      var itemsHtml = "";
+      order.items.forEach(function(it) {
+        itemsHtml += `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9;">
+            <div style="display: flex; gap: 12px; align-items: center;">
+              <img src="${it.img}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover;" />
+              <div>
+                <div style="font-weight: 700; color: #0f172a; font-size: 13.5px;">${it.name}</div>
+                <div style="font-size: 12px; color: #64748b;">Size: ${it.size} | Qty: ${it.qty}</div>
+              </div>
+            </div>
+            <div style="font-weight: 700; color: #334155; font-size: 14px;">
+              ${order.currency} ${(it.price * it.qty).toLocaleString()}
+            </div>
+          </div>
+        `;
+      });
+      document.getElementById("modal-items-list").innerHTML = itemsHtml;
+
+      document.getElementById("modal-subtotal").textContent = order.currency + " " + order.subtotal.toLocaleString();
+      document.getElementById("modal-shipping-fee").textContent = order.shippingFee === 0 ? "FREE" : order.currency + " " + order.shippingFee.toLocaleString();
+      document.getElementById("modal-discount").textContent = "- " + order.currency + " " + order.discount.toLocaleString();
+      document.getElementById("modal-grand-total").textContent = order.currency + " " + order.total.toLocaleString();
+
+      document.getElementById("modal-change-status-select").value = order.status;
+
+      document.getElementById("order-details-modal").style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeOrderModal() {
+      document.getElementById("order-details-modal").style.display = "none";
+      document.body.style.overflow = "auto";
+    }
+
+    // Event Listeners
+    document.addEventListener("DOMContentLoaded", function() {
+      renderOrders();
+
+      // Search & Filters
+      document.getElementById("order-search-input").addEventListener("input", renderOrders);
+      document.getElementById("status-filter").addEventListener("change", renderOrders);
+      document.getElementById("payment-filter").addEventListener("change", renderOrders);
+
+      // View Toggle
+      document.getElementById("view-table-btn").addEventListener("click", function() {
+        currentView = "table";
+        document.getElementById("orders-table-container").style.display = "block";
+        document.getElementById("orders-grid-container").style.display = "none";
+        this.style.background = "#ffffff";
+        this.style.color = "#0f172a";
+        document.getElementById("view-grid-btn").style.background = "transparent";
+        document.getElementById("view-grid-btn").style.color = "#64748b";
+      });
+
+      document.getElementById("view-grid-btn").addEventListener("click", function() {
+        currentView = "grid";
+        document.getElementById("orders-table-container").style.display = "none";
+        document.getElementById("orders-grid-container").style.display = "grid";
+        this.style.background = "#ffffff";
+        this.style.color = "#0f172a";
+        document.getElementById("view-table-btn").style.background = "transparent";
+        document.getElementById("view-table-btn").style.color = "#64748b";
+      });
+
+      // Delegation for View Details Buttons
+      document.addEventListener("click", function(e) {
+        var btn = e.target.closest(".view-order-btn");
+        if (btn) {
+          var id = btn.getAttribute("data-id");
+          openOrderModal(id);
+        }
+      });
+
+      document.getElementById("close-order-modal-btn").addEventListener("click", closeOrderModal);
+
+      // Update Status Action
+      document.getElementById("modal-save-status-btn").addEventListener("click", function() {
+        if (!activeOrder) return;
+        var newStatus = document.getElementById("modal-change-status-select").value;
+        activeOrder.status = newStatus;
+        alert("Fulfillment status for " + activeOrder.id + " updated to " + newStatus + ".");
+        closeOrderModal();
+        renderOrders();
+      });
+
+      // Export CSV
+      document.getElementById("export-orders-btn").addEventListener("click", function() {
+        var csv = "Order ID,Date,Customer Name,Email,Phone,Total,Payment,Status,City,Country\n";
+        ordersData.forEach(function(o) {
+          csv += `"${o.id}","${o.date}","${o.customer.name}","${o.customer.email}","${o.customer.phone}","${o.total}","${o.payment.method}","${o.status}","${o.shipping.city}","${o.shipping.country}"\n`;
+        });
+        var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "ArtScent_Orders_" + Date.now() + ".csv";
+        a.click();
+      });
+
+      // Print Invoice Action
+      document.getElementById("modal-print-btn").addEventListener("click", function() {
+        window.print();
+      });
+    });
+  </script>
+ </body>
+</html>

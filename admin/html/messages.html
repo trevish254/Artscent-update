@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html class="w-mod-js w-mod-ix wf-opensans-n3-active wf-opensans-i3-active wf-opensans-n4-active wf-opensans-i4-active wf-opensans-n6-active wf-opensans-i6-active wf-opensans-n7-active wf-opensans-i7-active wf-opensans-n8-active wf-opensans-i8-active wf-worksans-n1-active wf-worksans-n2-active wf-worksans-n3-active wf-worksans-n4-active wf-worksans-n5-active wf-worksans-n6-active wf-worksans-n7-active wf-worksans-n8-active wf-worksans-n9-active wf-materialsymbolsoutlined-n1-active wf-materialsymbolsoutlined-n2-active wf-materialsymbolsoutlined-n3-active wf-materialsymbolsoutlined-n4-active wf-inter-n1-active wf-inter-n2-active wf-inter-n3-active wf-inter-n4-active wf-inter-n5-active wf-inter-n6-active wf-inter-n7-active wf-inter-n8-active wf-inter-n9-active wf-sofia-n4-active wf-sofiasans-n1-active wf-sofiasans-n2-active wf-sofiasans-n3-active wf-sofiasans-n4-active wf-sofiasans-n5-active wf-sofiasans-n6-active wf-sofiasans-n7-active wf-sofiasans-n8-active wf-sofiasans-n9-active wf-active" data-wf-domain="task-dasher.webflow.io" data-wf-page="64fe9a1c9732cbbaa5c2d867" data-wf-site="64e04605d13dc7f401045408" lang="en">
+ <head>
+  <style>
+    .wf-force-outline-none[tabindex="-1"]:focus{outline:none;}
+  </style>
+  <meta charset="utf-8"/>
+  <link crossorigin="anonymous" href="https://assets-global.website-files.com" rel="preconnect"/>
+  <title>Customer Messages & Live Concierge | ArtScent Admin</title>
+  <meta content="Manage customer fragrance inquiries, custom bottle requests, and direct concierge messaging." name="description"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <link href="../css/task-dasher.webflow.f243a6447.css" rel="stylesheet" type="text/css"/>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="anonymous" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <script src="../js/webfont.js" type="text/javascript"></script>
+  <link href="../css/fonts.css" media="all" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <style>
+    .chat-user-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      border: 1px solid transparent;
+      margin-bottom: 6px;
+    }
+    .chat-user-item:hover {
+      background: rgba(241, 245, 249, 0.8);
+    }
+    .chat-user-item.active-chat {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+    }
+    .chat-bubble-received {
+      background: #f1f5f9;
+      color: #0f172a;
+      border-radius: 16px 16px 16px 4px;
+      padding: 12px 16px;
+      max-width: 70%;
+      font-size: 13.5px;
+      line-height: 1.5;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+    .chat-bubble-sent {
+      background: linear-gradient(135deg, #4a5cff 0%, #3644cc 100%);
+      color: #ffffff;
+      border-radius: 16px 16px 4px 16px;
+      padding: 12px 16px;
+      max-width: 70%;
+      font-size: 13.5px;
+      line-height: 1.5;
+      box-shadow: 0 2px 8px rgba(74,92,255,0.25);
+    }
+    @keyframes bubbleIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .new-bubble {
+      animation: bubbleIn 0.2s ease-out forwards;
+    }
+  </style>
+ </head>
+ <body class="body">
+  <section class="section fade-in-interaction" style="opacity: 1;">
+   <div class="ghost-header"></div>
+   <div class="main-flex-wrapper">
+    
+    <!-- Ultra-Luxury Glassmorphism Sidebar -->
+    <div class="sidebar">
+     <div class="logo">
+      <div class="logo-flex" style="display: flex; align-items: center; justify-content: space-between; padding: 0 4px;">
+       <a class="flex gap-4px w-inline-block" href="../index.html" style="text-decoration: none; display: flex; align-items: center; gap: 9px;">
+        <img src="https://res.cloudinary.com/dfedn2xsg/image/upload/v1787538552/c8d4e390-e505-4afb-a15b-0e57e96bcc8e-removebg-preview_jpe5pu.png" alt="ArtScent Logo" style="height: 32px; width: auto; object-fit: contain;" />
+        <h3 class="logo-title" style="margin: 0; font-size: 17.5px; font-weight: 800; color: #0f172a; letter-spacing: -0.02em;">ArtScent</h3>
+       </a>
+      </div>
+     </div>
+
+     <div class="sidebar-main">
+      <a class="sidebar-flex w-inline-block" href="../index.html">
+       <span class="material-symbols-outlined side-bar-icon">dashboard</span>
+       <h5 class="sidebar-title">Dashboard</h5>
+      </a>
+
+      <a class="sidebar-flex w-inline-block" href="orders.html">
+       <span class="material-symbols-outlined side-bar-icon">shopping_bag</span>
+       <h5 class="sidebar-title">Orders</h5>
+       <span class="sidebar-badge-count">8</span>
+      </a>
+
+      <a class="sidebar-flex w-inline-block" href="products.html">
+       <span class="material-symbols-outlined side-bar-icon">inventory_2</span>
+       <h5 class="sidebar-title">Products</h5>
+      </a>
+
+      <a class="sidebar-flex w-inline-block" href="users.html">
+       <span class="material-symbols-outlined side-bar-icon">group</span>
+       <h5 class="sidebar-title">Users</h5>
+      </a>
+
+      <a class="sidebar-flex w-inline-block w--current" href="messages.html">
+       <span class="material-symbols-outlined side-bar-icon">chat</span>
+       <h5 class="sidebar-title">Messages</h5>
+       <span class="sidebar-badge-count">3</span>
+      </a>
+
+      <a class="sidebar-flex w-inline-block" href="notifications.html">
+       <span class="material-symbols-outlined side-bar-icon">notifications</span>
+       <h5 class="sidebar-title">Notifications</h5>
+      </a>
+
+      <a class="sidebar-flex w-inline-block" href="settings.html">
+       <span class="material-symbols-outlined side-bar-icon">settings</span>
+       <h5 class="sidebar-title">Settings</h5>
+      </a>
+     </div>
+
+     <div class="sidebar-utilities" style="margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(226, 232, 240, 0.7); display: flex; flex-direction: column; gap: 5px;">
+      <a class="sidebar-flex w-inline-block" href="profile.html">
+       <span class="material-symbols-outlined side-bar-icon">person</span>
+       <h5 class="sidebar-title">Admin Profile</h5>
+      </a>
+      <a class="sidebar-flex w-inline-block" href="../../Home/index.html" target="_blank" style="background: rgba(241, 245, 249, 0.65);">
+       <span class="material-symbols-outlined side-bar-icon" style="color: #4a5cff;">open_in_new</span>
+       <h5 class="sidebar-title" style="color: #4a5cff;">View Live Store</h5>
+      </a>
+     </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="dashboard" style="background: #f8fafc; min-height: 100vh;">
+     <div class="dashboard-header" style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); border-bottom: 1px solid #e2e8f0; padding: 16px 36px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h2 style="font-size: 24px; font-weight: 800; color: #0f172a; margin: 0 0 4px 0; letter-spacing: -0.02em;">Customer Concierge & Messages</h2>
+        <p style="font-size: 13.5px; color: #64748b; margin: 0;">Direct customer inquiries, fragrance consultations, and order support.</p>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <span style="font-size: 12px; font-weight: 700; color: #16a34a; background: #dcfce7; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e;"></span>
+          Concierge Live
+        </span>
+      </div>
+     </div>
+
+     <div class="dashboard-details" style="padding: 24px 36px;">
+      <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; display: grid; grid-template-columns: 340px 1fr; height: calc(100vh - 160px); box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+        
+        <!-- Left Sidebar: Conversations List -->
+        <div style="border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; background: #ffffff;">
+          <div style="padding: 16px; border-bottom: 1px solid #f1f5f9;">
+            <div style="position: relative;">
+              <span class="material-symbols-outlined" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 18px; color: #94a3b8;">search</span>
+              <input type="text" id="chat-search" placeholder="Search conversations..." style="width: 100%; box-sizing: border-box; padding: 8px 12px 8px 34px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 13px; outline: none; background: #f8fafc;" />
+            </div>
+          </div>
+
+          <!-- Chat List -->
+          <div id="chat-users-list" style="flex: 1; overflow-y: auto; padding: 10px;">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Right Side: Active Chat Window -->
+        <div style="display: flex; flex-direction: column; background: #fdfdfd;">
+          
+          <!-- Chat Header -->
+          <div id="chat-header" style="padding: 14px 24px; border-bottom: 1px solid #e2e8f0; background: #ffffff; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <img id="active-user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" style="width: 42px; height: 42px; border-radius: 50%; object-fit: cover;" />
+              <div>
+                <h4 id="active-user-name" style="margin: 0; font-size: 15px; font-weight: 700; color: #0f172a;">Elena Rostova</h4>
+                <span id="active-user-status" style="font-size: 12px; color: #16a34a; font-weight: 600;">● Online | VIP Customer</span>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <a id="active-user-order-btn" href="orders.html" style="text-decoration: none; font-size: 12px; font-weight: 600; color: #4a5cff; background: #eff6ff; border: 1px solid #bfdbfe; padding: 6px 12px; border-radius: 8px; display: flex; align-items: center; gap: 4px;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">receipt</span>
+                View Order #ORD-9021
+              </a>
+            </div>
+          </div>
+
+          <!-- Messages Container -->
+          <div id="chat-messages-container" style="flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+            <!-- Messages rendered dynamically -->
+          </div>
+
+          <!-- Chat Input Bar -->
+          <div style="padding: 16px 24px; background: #ffffff; border-top: 1px solid #e2e8f0;">
+            <form id="chat-form" style="display: flex; gap: 10px; align-items: center;">
+              <button type="button" style="background: transparent; border: none; color: #94a3b8; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 6px;">
+                <span class="material-symbols-outlined" style="font-size: 22px;">attach_file</span>
+              </button>
+              <input type="text" id="chat-input-text" placeholder="Type a reply to Elena Rostova..." style="flex: 1; padding: 12px 16px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 13.5px; outline: none; background: #f8fafc;" />
+              <button type="submit" style="background: linear-gradient(135deg, #4a5cff 0%, #3644cc 100%); color: white; border: none; padding: 11px 20px; border-radius: 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(74,92,255,0.25);">
+                <span>Send</span>
+                <span class="material-symbols-outlined" style="font-size: 17px;">send</span>
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+     </div>
+    </div>
+   </div>
+  </section>
+
+  <!-- JavaScript -->
+  <script>
+    var conversations = [
+      {
+        id: 1,
+        name: "Elena Rostova",
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
+        role: "VIP Member",
+        unread: 2,
+        orderId: "#ORD-9021",
+        messages: [
+          { sender: "customer", text: "Hello ArtScent Concierge! I placed an order for the Daisy Love 100ml earlier today. Could you confirm if it comes with the complimentary gift wrapping?", time: "11:15 AM" },
+          { sender: "admin", text: "Hello Elena! Yes absolutely, every VIP order is hand-packaged in our signature black and gold embossed gift box with a custom personalized ribbon.", time: "11:20 AM" },
+          { sender: "customer", text: "That is wonderful to hear! Also, could you advise on when the courier is expected in Karen?", time: "11:24 AM" },
+          { sender: "customer", text: "I have an evening gala and would love to wear it tonight.", time: "11:25 AM" }
+        ]
+      },
+      {
+        id: 2,
+        name: "Alexander Sterling",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
+        role: "VIP Member",
+        unread: 1,
+        orderId: "#ORD-9020",
+        messages: [
+          { sender: "customer", text: "Hi, I would like to reserve 2 bottles of the Wild Oud Extrait from the upcoming restock batch.", time: "Yesterday" },
+          { sender: "admin", text: "Good day Alexander. We have reserved 2 bottles for your account. You can complete checkout directly through your private link.", time: "Yesterday" },
+          { sender: "customer", text: "Payment completed via Visa. Thank you for the swift assistance.", time: "01:15 AM" }
+        ]
+      },
+      {
+        id: 3,
+        name: "Amina Al-Mansoor",
+        avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100",
+        role: "Customer",
+        unread: 0,
+        orderId: "#ORD-9019",
+        messages: [
+          { sender: "customer", text: "The Royal Jasmine delivery just arrived in Mombasa! The packaging and fragrance notes are exquisite.", time: "Yesterday" },
+          { sender: "admin", text: "We are thrilled you love it Amina! Let us know if you need any fragrance layering tips.", time: "Yesterday" }
+        ]
+      },
+      {
+        id: 4,
+        name: "David Kimani",
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
+        role: "Customer",
+        unread: 0,
+        orderId: "#ORD-9018",
+        messages: [
+          { sender: "customer", text: "Can I pay with M-Pesa on delivery for Nairobi orders?", time: "Aug 22" },
+          { sender: "admin", text: "Hello David! Yes, our courier carries an M-Pesa Buy Goods Till number upon delivery.", time: "Aug 22" }
+        ]
+      }
+    ];
+
+    var currentChatId = 1;
+
+    function renderConversationsList() {
+      var container = document.getElementById("chat-users-list");
+      var search = (document.getElementById("chat-search").value || "").toLowerCase();
+      var html = "";
+
+      conversations.forEach(function(c) {
+        if (search && !c.name.toLowerCase().includes(search)) return;
+        var lastMsg = c.messages[c.messages.length - 1];
+        var isAct = c.id === currentChatId ? " active-chat" : "";
+
+        html += `
+          <div class="chat-user-item${isAct}" onclick="selectChat(${c.id})">
+            <img src="${c.avatar}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;" />
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px;">
+                <span style="font-weight: 700; color: #0f172a; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${c.name}</span>
+                <span style="font-size: 11px; color: #94a3b8;">${lastMsg.time}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 12px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 170px;">${lastMsg.text}</span>
+                ${c.unread > 0 ? '<span style="background: #4a5cff; color: white; border-radius: 10px; font-size: 10.5px; font-weight: 700; padding: 2px 6px;">' + c.unread + '</span>' : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function selectChat(id) {
+      currentChatId = id;
+      var c = conversations.find(function(item) { return item.id === id; });
+      if (!c) return;
+      c.unread = 0;
+
+      document.getElementById("active-user-avatar").src = c.avatar;
+      document.getElementById("active-user-name").textContent = c.name;
+      document.getElementById("active-user-status").textContent = "● Online | " + c.role;
+      document.getElementById("active-user-order-btn").textContent = "View Order " + c.orderId;
+      document.getElementById("chat-input-text").placeholder = "Type a reply to " + c.name + "...";
+
+      renderMessages();
+      renderConversationsList();
+    }
+
+    function renderMessages() {
+      var c = conversations.find(function(item) { return item.id === currentChatId; });
+      var container = document.getElementById("chat-messages-container");
+      var html = "";
+
+      c.messages.forEach(function(m) {
+        if (m.sender === "customer") {
+          html += `
+            <div style="display: flex; gap: 10px; align-items: flex-end;">
+              <img src="${c.avatar}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" />
+              <div>
+                <div class="chat-bubble-received">${m.text}</div>
+                <span style="font-size: 10.5px; color: #94a3b8; margin-top: 3px; display: block;">${m.time}</span>
+              </div>
+            </div>
+          `;
+        } else {
+          html += `
+            <div style="display: flex; justify-content: flex-end; align-items: flex-end;">
+              <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                <div class="chat-bubble-sent">${m.text}</div>
+                <span style="font-size: 10.5px; color: #94a3b8; margin-top: 3px; display: block;">${m.time} • Sent</span>
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      container.innerHTML = html;
+      container.scrollTop = container.scrollHeight;
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      renderConversationsList();
+      renderMessages();
+
+      document.getElementById("chat-search").addEventListener("input", renderConversationsList);
+
+      document.getElementById("chat-form").addEventListener("submit", function(e) {
+        e.preventDefault();
+        var input = document.getElementById("chat-input-text");
+        var text = input.value.trim();
+        if (!text) return;
+
+        var c = conversations.find(function(item) { return item.id === currentChatId; });
+        c.messages.push({
+          sender: "admin",
+          text: text,
+          time: "Just now"
+        });
+
+        input.value = "";
+        renderMessages();
+        renderConversationsList();
+      });
+    });
+  </script>
+ </body>
+</html>
